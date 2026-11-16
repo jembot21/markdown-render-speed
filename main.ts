@@ -17,9 +17,14 @@ interface Case {
 const inputDir = process.env.MAKEFUN_INPUT_DIR ?? '/input';
 const outputDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 
-const cases = JSON.parse(readFileSync(join(inputDir, 'cases.json'), 'utf8')) as Case[];
-const out = new Array<string>(cases.length);
-for (let i = 0; i < cases.length; i++) {
-  out[i] = parse(cases[i].markdown);
+// Join the two file paths once, up front, instead of per operation.
+const inputPath = join(inputDir, 'cases.json');
+const outputPath = join(outputDir, 'html.json');
+
+const cases = JSON.parse(readFileSync(inputPath, 'utf8')) as Case[];
+const list = cases;
+const out = new Array<string>(list.length);
+for (let i = 0; i < list.length; i++) {
+  out[i] = parse(list[i].markdown);
 }
-writeFileSync(join(outputDir, 'html.json'), JSON.stringify(out));
+writeFileSync(outputPath, JSON.stringify(out));
